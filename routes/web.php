@@ -27,6 +27,21 @@ $router->group(['middleware'=>['auth']], function() use($router){
     $router->put('/usuarios/{user}', 'UserController@update');
     $router->delete('/usuarios/{user}', 'UserController@destroy');
 
-    //$router->get('/topic', 'UserController@index');
+    //Rutas Topics
+    $router->get('/topicos', 'TopicController@index');
+    $router->get('/topicos/{id}', 'TopicController@get');
+    $router->post('/topicos', 'TopicController@create');
+    $router->put('/topicos/{id}', 'TopicController@update');
+    $router->delete('/topicos/{id}', 'TopicController@destroy');
+
+    //Rutas Post
+    $router->get('/posts', 'PostController@index');
+    $router->get('/posts/{id}', 'PostController@get');
+    $router->post('/posts', 'PostController@create');
+    $router->put('/posts/{id}', 'PostController@update');
+    $router->delete('/posts/{id}', 'PostController@destroy');
 }
 );
+
+
+
