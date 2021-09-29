@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -14,7 +13,6 @@ class PostController extends Controller
 
     public function get($id_topic){
         $result = Post::where('topics_id', $id_topic);
-        //$result = DB::table('users')->where('user', '=', $user)->get();
         if($result)
             return $result;
         else
@@ -22,13 +20,13 @@ class PostController extends Controller
     }
 
     public function create(Request $req){
-        $this->validate($req,
-        ['topics_id'=>'required',
-        'mensaje'=>'required']);
+        $this->validate($req, [
+            'topics_id'=>'required',
+            'mensaje'=>'required']);
 
         $datos = new Post;
         $datos->user = $req->user()->user;
-        $result = $datos -> fill($req->all())->save();
+        $result = $datos->fill($req->all())->save();
         if($result)
             return response()->json(['status'=>'success'], 200);
         else
