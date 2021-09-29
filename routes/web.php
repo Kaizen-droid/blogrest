@@ -13,13 +13,15 @@
 |
 */
 
+use Illuminate\Http\Request;
+
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
 $router->get('/login/{user}/{pass}','AuthController@login');
 
-$router->group(['middleware'=>['auth']], function() use($router){
+$router->group(['middleware'=>['auth', 'cors']], function() use($router){
 
     $router->get('/usuarios', 'UserController@index');
     $router->get('/usuarios/{user}', 'UserController@get');
@@ -36,12 +38,15 @@ $router->group(['middleware'=>['auth']], function() use($router){
 
     //Rutas Post
     $router->get('/posts', 'PostController@index');
-    $router->get('/posts/{id}', 'PostController@get');
+    $router->get('/posts/{id_topic}', 'PostController@get');
     $router->post('/posts', 'PostController@create');
     $router->put('/posts/{id}', 'PostController@update');
     $router->delete('/posts/{id}', 'PostController@destroy');
 }
 );
 
-
+// $router->get('/test', ['middleware' => ['auth'], function (Request $request) use ($router) {
+//     $user = $request->user();
+//     return $user->user;
+// }]);
 

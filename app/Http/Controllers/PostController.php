@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
-    public function index(Request $req){
+    public function index(){
         return Post::all();
     }
 
-    public function get($id){
-        $result = Post::find($id);
+    public function get($id_topic){
+        $result = Post::where('topics_id', $id_topic);
         //$result = DB::table('users')->where('user', '=', $user)->get();
         if($result)
             return $result;
@@ -23,12 +23,11 @@ class PostController extends Controller
 
     public function create(Request $req){
         $this->validate($req,
-        ['id'=>'required',
-        'user'=>'required',
-        'topics_id'=>'required',
+        ['topics_id'=>'required',
         'mensaje'=>'required']);
 
         $datos = new Post;
+        $datos->user = $req->user()->user;
         $result = $datos -> fill($req->all())->save();
         if($result)
             return response()->json(['status'=>'success'], 200);
@@ -38,13 +37,12 @@ class PostController extends Controller
 
     public function update(Request $req, $id){
         $this->validate($req,
-        ['id'=>'filled',
-        'user'=>'filled',
-        'topics_id'=>'filled',
-        'mensaje'=>'filled']);
+        ['mensaje'=>'filled']);
 
         $datos = Post::find($id);
-        $result = $datos -> fill($req->all())->save();
+        if(!$datos)return response()->json(['status'=>'failed'], 404);
+        if($req->user()->user !=$datos->user) return response()->json(['status'=>'failed'], 401);
+        $result = $datos->fill($req->all())->save();
         if($result)
             return response()->json(['status'=>'success'], 200);
         else

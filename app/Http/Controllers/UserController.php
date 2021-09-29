@@ -10,12 +10,14 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function index(Request $req){
+        if($req->user()->rol != 'A') return response()->json(['status'=>'failed'], 401);
         return User::all();
     }
 
-    public function get($user){
+    public function get(Request $req, $user){
+        if($req->user()->rol != 'A') return response()->json(['status'=>'failed'], 401);
         $result = User::find($user);
-        //$result = DB::table('users')->where('user', '=', $user)->get();
+        
         if($result)
             return $result;
         else
@@ -23,6 +25,7 @@ class UserController extends Controller
     }
 
     public function create(Request $req){
+        if($req->user()->rol != 'A') return response()->json(['status'=>'failed'], 401);
         $this->validate($req, 
         ['user'=>'required', 
         'nombre'=>'required',
@@ -43,6 +46,7 @@ class UserController extends Controller
     }
 
     public function update(Request $req, $user){
+        if($req->user()->rol != 'A') return response()->json(['status'=>'failed'], 401);
         $this->validate($req, 
         ['user'=>'filled', 
         'nombre'=>'filled',
@@ -50,8 +54,9 @@ class UserController extends Controller
         'rol'=>'filled']);
 
         $datos = User::find($user);
-        //$datos->pass = $req->pass;
-        $result = $datos -> fill($req->all())->save();
+        $datos->pass = Hash::make( $req->pass );
+        if(!$datos) return response()->json(['status'=>'failed'], 404);
+        $result = $datos->fill($req->all())->save();
         if($result)
             return response()->json(['status'=>'success'], 200);
         else
@@ -59,7 +64,7 @@ class UserController extends Controller
     }
 
     public function destroy($user){
-
+        if($req->user()->rol != 'A') return response()->json(['status'=>'failed'], 401);
         $datos = User::find($user);
         if(!$datos) return response()->json(['status'=>'failed'], 404);
         $result = $datos->delete();
