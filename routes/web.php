@@ -19,9 +19,11 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+$router->group(['middleware'=>['cors']], function() use($router){
 $router->get('/login/{user}/{pass}','AuthController@login');
+});
 
-$router->group(['middleware'=>['auth', 'cors']], function() use($router){
+$router->group(['middleware'=>['auth','cors']], function() use($router){
 
     $router->get('/usuarios', 'UserController@index');
     $router->get('/usuarios/{user}', 'UserController@get');
@@ -49,4 +51,3 @@ $router->group(['middleware'=>['auth', 'cors']], function() use($router){
 //     $user = $request->user();
 //     return $user->user;
 // }]);
-
